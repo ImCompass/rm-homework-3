@@ -1,0 +1,67 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "STM32: Build (Debug)",
+            "type": "cmake",
+            "command": "build",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            // 默认构建任务：Ctrl+Shift+B = 先编译、再直接烧录（不进入调试）
+            "label": "STM32: Flash (ST-Link)",
+            "type": "process",
+            "command": "C:/Users/Compass/AppData/Local/stm32cube/bundles/programmer/2.23.0/bin/STM32_Programmer_CLI.exe",
+            "args": [
+                "-c", "port=SWD",
+                "-w", "build/Debug/rm-homework-3.elf",
+                "-v",
+                "-rst"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": ["STM32: Build (Debug)"],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        },
+        {
+            // 备用方案：如果 STM32CubeProgrammer 路径失效，用 OpenOCD 烧录
+            "label": "STM32: Flash (OpenOCD)",
+            "type": "process",
+            "command": "D:/Software/OpenOCD/bin/openocd.exe",
+            "args": [
+                "-f", "interface/stlink.cfg",
+                "-f", "target/stm32f1x.cfg",
+                "-c", "program build/Debug/rm-homework-3.elf verify reset exit"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": ["STM32: Build (Debug)"],
+            "dependsOrder": "sequence",
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        }
+    ]
+}
